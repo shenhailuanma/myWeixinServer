@@ -60,8 +60,14 @@ class Server:
     
         #######  web test ######
         @bottle.route('/')
-        @bottle.route('/index')
         def index():
+            try:
+
+                return True
+            except Exception,ex:
+                return False
+
+
             return "Hello, this is myWeixinServer."
 
         @bottle.error(404)
