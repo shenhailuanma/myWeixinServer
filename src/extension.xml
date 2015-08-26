@@ -1,0 +1,7 @@
+<uwsgi>
+<socket>:9000</socket>
+<chdir>/root/zhangxu/myWeixinServer/src</chdir>
+<wsgi-file>server.py</wsgi-file>
+<module>extension</module>
+<processes>2</processes>
+</uwsgi>
