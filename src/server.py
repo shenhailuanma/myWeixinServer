@@ -9,6 +9,7 @@ from datetime import datetime
 
 import bottle
 
+from wechat_sdk import WechatBasic 
 
 __author__ = 'shenhailuanma'
 __version__ = '0.1.0'
@@ -30,6 +31,15 @@ class Server:
         # mark system start time
         self.system_initialized = datetime.now()
 
+
+        # weixin about
+        self.token      = 'shenhailuanma'
+        self.signature  = None
+        self.echostr    = None
+        self.timestamp  = None
+        self.nonce      = None
+
+        self.wechat     = WechatBasic(token = self.token)
 
         # set the logger
         self.log_level = logging.DEBUG
@@ -60,7 +70,7 @@ class Server:
     
         #######  web test ######
         @bottle.route('/')
-        def index():
+        def index_get():
             try:
                 # get the post data
                 self.logger.debug('handle a GET request: /, ')
@@ -69,10 +79,10 @@ class Server:
 
                 # get the data
                 self.logger.debug('handle the request data: %s' %(bottle.request.query_string))
-                self.logger.debug('handle the request signature:%s' %(bottle.request.query.signature))
-                self.logger.debug('handle the request echostr:%s' %(bottle.request.query.echostr))
-                self.logger.debug('handle the request timestamp:%s' %(bottle.request.query.timestamp))
-                self.logger.debug('handle the request nonce:%s' %(bottle.request.query.nonce))
+                #self.logger.debug('handle the request signature:%s' %(bottle.request.query.signature))
+                #self.logger.debug('handle the request echostr:%s' %(bottle.request.query.echostr))
+                #self.logger.debug('handle the request timestamp:%s' %(bottle.request.query.timestamp))
+                #self.logger.debug('handle the request nonce:%s' %(bottle.request.query.nonce))
 
                 return bottle.request.query.echostr
             except Exception,ex:
@@ -80,6 +90,49 @@ class Server:
 
 
             return "Hello, this is myWeixinServer."
+
+
+        @bottle.route('/', method="POST")
+        def index_post():
+            try:
+                response = ''
+
+                self.logger.debug('handle a POST request: /, ')
+                self.logger.debug('handle the request data: %s' %(bottle.request.query_string))
+
+                post_data = bottle.request.body.getvalue()
+                self.logger.debug('handle the request post data: %s' %(post_data))
+
+                echostr     = bottle.request.query.echostr
+                signature   = bottle.request.query.signature
+                timestamp   = bottle.request.query.timestamp
+                nonce       = bottle.request.query.nonce
+
+                if self.wechat.check_signature(signature=signature, timestamp=timestamp, nonce=nonce):
+                    self.logger.debug('check_signature ok.')
+
+                    self.wechat.parse_data(post_data)
+
+                    message = self.wechat.get_message()
+
+                    if message.type == 'text':
+                        if message.content == 'wechat':
+                            response = wechat.response_text(u'^_^')
+                        else:
+                            response = wechat.response_text(u'文字')
+
+                    elif message.type == 'image':
+                        response = wechat.response_text(u'图片')
+                    else:
+                        response = wechat.response_text(u'未知')
+
+
+                
+
+                return 
+            except Exception,ex:
+                return "%s" %(ex)
+
 
         @bottle.error(404)
         def error404(error):
