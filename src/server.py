@@ -62,10 +62,21 @@ class Server:
         @bottle.route('/')
         def index():
             try:
+                # get the post data
+                self.logger.debug('handle a GET request: /, ')
 
-                return True
+                # e.g :  /?signature=04d39d841082682dc7623945528d8086cc9ece97&echostr=8242236714827861439&timestamp=1440564411&nonce=2061393952
+
+                # get the data
+                self.logger.debug('handle the request data: %s' %(bottle.request.query_string))
+                self.logger.debug('handle the request signature:%s' %(bottle.request.query.signature))
+                self.logger.debug('handle the request echostr:%s' %(bottle.request.query.echostr))
+                self.logger.debug('handle the request timestamp:%s' %(bottle.request.query.timestamp))
+                self.logger.debug('handle the request nonce:%s' %(bottle.request.query.nonce))
+
+                return bottle.request.query.echostr
             except Exception,ex:
-                return False
+                return "%s" %(ex)
 
 
             return "Hello, this is myWeixinServer."
