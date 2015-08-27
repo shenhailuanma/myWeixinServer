@@ -123,7 +123,9 @@ class Server:
                         if message.content == 'wechat':
                             response = self.wechat.response_text(u'^_^')
                         elif u'天气' in message.content:
-                            data = self.weather.get_weather_by_city(u'北京')
+                            city = u'北京'
+                            data = self.weather.get_weather_by_city(city)
+                            self.logger.debug('get the weather response:{0}'.format(data))
                             response = self.wechat.response_text(data)
                         else:
                             response = self.wechat.response_text(u'文字')
