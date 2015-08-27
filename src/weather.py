@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
+import urllib
 import urllib2
 
 class weather:
@@ -9,9 +9,16 @@ class weather:
     def __init__(self):
         self.api_url = u'http://wthrcdn.etouch.cn/weather_mini?city='
 
+
+
     def get_weather_by_city(self, city):
-        url = self.api_url + city
-        ret = self.http_get(url,5)
+
+        params = {}
+        params['city'] = city
+        params_string = urllib.urlencode(params)
+        get_url = "{0}?{1}".format(self.api_url, params_string)
+
+        ret = self.http_get(get_url,5)
 
         if ret == None:
             ret = 'no data.'
