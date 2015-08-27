@@ -10,6 +10,8 @@ from datetime import datetime
 import bottle
 
 from wechat_sdk import WechatBasic 
+from weather import weather
+
 
 __author__ = 'shenhailuanma'
 __version__ = '0.1.0'
@@ -40,6 +42,8 @@ class Server:
         self.nonce      = None
 
         self.wechat     = WechatBasic(token = self.token)
+
+        self.weather    = weather()
 
         # set the logger
         self.log_level = logging.DEBUG
@@ -118,6 +122,9 @@ class Server:
                     if message.type == 'text':
                         if message.content == 'wechat':
                             response = self.wechat.response_text(u'^_^')
+                        elif u'天气' in message.content:
+                            data = self.weather.get_weather_by_city(u'天气')
+                            response = self.wechat.response_text(data)
                         else:
                             response = self.wechat.response_text(u'文字')
 
