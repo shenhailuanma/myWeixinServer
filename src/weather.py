@@ -44,4 +44,4 @@ class weather:
         return None
 
     def http_get(self, url, timeout=5):
-        return self.http_post(url, timeout)
+        return self.http_post(url, None, timeout)
