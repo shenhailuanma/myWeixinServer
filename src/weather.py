@@ -11,7 +11,7 @@ class weather:
 
     def get_weather_by_city(self, city):
         url = self.api_url + city
-        ret = self.http_get(url)
+        ret = self.http_get(url,5)
 
         if ret == None:
             ret = 'no data.'
