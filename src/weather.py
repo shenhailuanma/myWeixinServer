@@ -68,14 +68,8 @@ class weather:
             self.logger.debug('weather api url:{0}'.format(get_url))
 
             ret = self.http_post(get_url,None,1)
-            #ret = 'success'
-
             if ret == None:
-                ret = 'no data.'
-            data = StringIO.StringIO(ret)
-            gzipper = gzip.GzipFile(fileobj=data)
-            ret = gzipper.read()
-
+                return 'no data.'
 
             ret_json = json.loads(ret)
 
@@ -109,9 +103,19 @@ class weather:
                     headers['User-Agent'] = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'
                     headers['Content-Type'] = 'application/json;text/plain;charset=UTF-8'
                     request = urllib2.Request(url=url, data=data, headers=headers)
-                    
+                    request.add_header('Accept-encoding', 'gzip')
 
                     req = urllib2.urlopen(request,timeout=timeout)
+                    
+
+                    if req.info().get('Content-Encoding') == 'gzip':
+                        self.logger.debug('Content-Encoding == gzip')
+                        data = StringIO.StringIO(req.read())
+                        gzipper = gzip.GzipFile(fileobj=data)
+                        response = gzipper.read()
+                    else:
+                        response = req.read()
+
                 except Exception,ex:
                     self.logger.error('urlopen error:{0}'.format(str(ex)))
 
@@ -120,7 +124,7 @@ class weather:
                         return None
                     continue
                 
-                return req.read()
+                return response
 
             return None
 
