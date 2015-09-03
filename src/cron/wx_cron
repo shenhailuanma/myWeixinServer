@@ -1,0 +1,2 @@
+# update access token  every 30 minute mins
+*/30 * * * *   root  /opt/bin/python2.7 /root/zhangxu/myWeixinServer/src/cron/update_access_token.py &
