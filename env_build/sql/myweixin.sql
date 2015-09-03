@@ -8,3 +8,5 @@ CREATE TABLE  IF NOT EXISTS `access_token` (
   `update_time` TIMESTAMP  DEFAULT CURRENT_TIMESTAMP  COMMENT 'the update time',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+
