@@ -13,6 +13,7 @@ import bottle
 from wechat_sdk import WechatBasic 
 from weather import weather
 
+from common.Database import Database
 
 __author__ = 'shenhailuanma'
 __version__ = '0.1.0'
@@ -48,6 +49,9 @@ class Server:
         self.wechat     = WechatBasic(token = self.token)
 
         self.weather    = weather()
+
+        # database
+        self.database   = Database()
 
         # set the logger
         self.log_level = logging.DEBUG
@@ -158,12 +162,9 @@ class Server:
         def gettime():
             return "%s" %(datetime.now())
 
-        @bottle.route('/api/update/access_token')
+        @bottle.route('/api/get/access_token')
         def update_access_token():
             access_token = self.get_access_token()
-            self.access_token = access_token
-
-            # update database
 
             return "%s" %(access_token)
 
@@ -174,15 +175,8 @@ class Server:
 
     def get_access_token(self):
         try:
-            url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={0}&secret={1}".format(self.appid, self.appsecret)
-            self.logger.debug('get_access_token request url:%s.' %(url))
-            response = self.http_get(url, 5)
-            if response != None:
-                response_json = json.loads(response)
-                if response_json.has_key('access_token') and len(response_json['access_token']) > 0:
-                    return response_json['access_token']
-
-            return None
+            access_token = self.database.get_access_token(self.appid, self.appsecret)
+            return access_token
         except Exception,ex:
             self.logger.error('get_access_token error:{0}'.format(str(ex)))
             return None

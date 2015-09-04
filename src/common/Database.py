@@ -367,3 +367,51 @@ class Database:
 
         result,msg = self.db_insert_common('access_token', value_list)
         return result,msg
+
+
+    def get_weather_data(self, city):
+
+        try:
+            result = None
+            conn = None
+            conn = self.__connect_to_db()
+
+            sql = "SELECT data FROM weather_data WHERE city='{0}';".format(city)
+            self.logger.debug("[get_weather_data] sql:%s" %(sql))
+
+            conn.execute(sql)
+            dataset = conn.fetchall()
+
+            for row in dataset:
+                result = row[0]
+
+            if conn is not None:
+                conn.close(); 
+            
+            return result
+
+        except Exception,ex:
+            msg = "error:%s." %(str(ex))
+            self.logger.warning("get_weather_data, %s" %msg)
+            return None
+
+    def update_weather_data(self, city, data):
+
+        where_list = []
+        self.__add_one_name_and_value(where_list, "city", city)
+
+        set_list = []
+        self.__add_one_name_and_value(set_list, "data", data)
+        self.__add_one_name_and_value(set_list, "update_time", datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+
+        result,msg = self.db_update_common('weather_data', set_list, where_list)
+        return result,msg
+
+    def insert_weather_data(self, city, data):
+
+        value_list = []
+        self.__add_one_name_and_value(value_list, "city", city)
+        self.__add_one_name_and_value(value_list, "data", data)
+        self.__add_one_name_and_value(value_list, "update_time", datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+
+        result,msg = self.db_insert_common('weather_data', value_list)
