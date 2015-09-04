@@ -57,12 +57,13 @@ class weather:
         try:
             self.logger.debug('weather api_url:{0}'.format(self.api_url))
             params = {}
-            params['city'] = u'北京'
-            #params_string = urllib.urlencode(params)
-            #self.logger.debug('weather params:{0}'.format(params_string))
+            #params['city'] = u'北京'
+            params['city'] = city
+            params_string = urllib.urlencode(params)
+            self.logger.debug('weather params:{0}'.format(params_string))
 
-            #get_url = "{0}?{1}".format(self.api_url, params_string)
-            get_url = u'http://wthrcdn.etouch.cn/weather_mini?city=%E5%8C%97%E4%BA%AC'
+            get_url = "{0}?{1}".format(self.api_url, params_string)
+            #get_url = u'http://wthrcdn.etouch.cn/weather_mini?city=%E5%8C%97%E4%BA%AC'
             #get_url = u'http://php.weather.sina.com.cn/xml.php?city=%B1%B1%BE%A9&password=DJOYnieT8234jlsK&day=0'
 
             self.logger.debug('weather api url:{0}'.format(get_url))

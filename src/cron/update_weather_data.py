@@ -6,13 +6,14 @@ import logging
 import json
 import urllib
 import urllib2
+import time
 
 from common.Database import Database
 from weather import weather
 
 class update_weather_data:
 
-    def __init__(self, city):
+    def __init__(self, city=None):
 
         self.city = city
 
@@ -47,22 +48,27 @@ class update_weather_data:
 
         self.logger.debug('update_weather_data init over.')
 
+
+    def set_city(self,city):
+        self.city = city
+
+
     def update(self):
         try:
 
             # get weather data use weather class
-            data = self.weather.get_weather_by_city(city)
+            data = self.weather.get_weather_by_city(self.city)
             
             # check the weather data if exist, if not to insert it.
-            db_weather_data = self.database.get_weather_data(city)
+            db_weather_data = self.database.get_weather_data(self.city)
             self.logger.debug('weather_data from database:%s.' %(db_weather_data))
 
             if db_weather_data != None:
                 # update weather data
-                
+                self.database.update_weather_data(self.city, data)
             else:
                 # insert weather data
-
+                self.database.insert_weather_data(self.city, data)
 
         except Exception,ex:
             self.logger.error('update_weather_data error:{0}'.format(str(ex)))
@@ -120,8 +126,11 @@ class update_weather_data:
 if __name__ == "__main__":
 
 
-    city_list = [u"北京",u"上海"]
-    handle = update_weather_data(city_list)
-    #for city in city_list:
-    #    handle = update_weather_data(city)
-    #    handle.update()
+    city_list = [u"北京",u"上海",u"天津"]
+    handle = update_weather_data()
+
+    for city in city_list:
+        print('city:%s.' %(city))
+        handle.set_city(city)
+        handle.update()
+        time.sleep(1)
