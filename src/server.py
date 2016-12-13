@@ -150,6 +150,18 @@ class Server:
             except Exception,ex:
                 return "%s" %(ex)
 
+        @bottle.route('/images/:filename')
+        def send_image(filename=None):
+            # FIXME: the param 'root' should be define in other place, now just for test.
+            root_path = "%s/images" %(self.dir_path)
+            return bottle.static_file(filename, root=root_path)
+
+        @bottle.route('/videos/:filename')
+        def send_video(filename=None):
+            # FIXME: the param 'root' should be define in other place, now just for test.
+            root_path = "%s/videos" %(self.dir_path)
+            return bottle.static_file(filename, root=root_path)
+
 
         @bottle.error(404)
         def error404(error):
