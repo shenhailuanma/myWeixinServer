@@ -12,7 +12,7 @@ class config:
 
     # database configs
     mysqlHost = 'localhost'
-    mysqlUser = 'root'
+    mysqlUser = 'tvie'
     mysqlPassword = 'tvierocks'
     mysqlDatabase = 'myweixin'
     Database_log_path = server_log_path

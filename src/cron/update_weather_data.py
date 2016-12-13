@@ -130,7 +130,7 @@ if __name__ == "__main__":
     handle = update_weather_data()
 
     for city in city_list:
-        print('city:%s.' %(city))
+        #print('city:%s.' %(city))
         handle.set_city(city)
         handle.update()
         time.sleep(1)

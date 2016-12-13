@@ -233,7 +233,7 @@ class Server:
 
 
 if __name__ == "__main__":
-    server = Server('0.0.0.0', 9000, logging.DEBUG)
+    server = Server('0.0.0.0', 80, logging.DEBUG)
     server.run()
 
 else:
