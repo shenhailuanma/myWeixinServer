@@ -46,7 +46,7 @@ class Server:
         self.timestamp  = None
         self.nonce      = None
 
-        self.wechat     = WechatBasic(token = self.token)
+        self.wechat     = WechatBasic(token=self.token, appid=self.appid, appsecret=self.appsecret)
 
         self.weather    = weather()
 
@@ -140,6 +140,15 @@ class Server:
 
                     elif message.type == 'image':
                         response = self.wechat.response_text(u'图片')
+                    elif message.type == 'video':
+                        self.logger.debug('message.media_id:%s' %(message.media_id))
+                        response = self.wechat.download_media(message.media_id)
+                        self.logger.debug('message.media_id:%s over' %(message.media_id))
+                        #response = self.wechat.response_text(u'视频')
+                    elif message.type == 'voice':
+                        response = self.wechat.response_text(u'音频')
+                    elif message.type == 'location':
+                        response = self.wechat.response_text(u'位置')
                     else:
                         response = self.wechat.response_text(u'未知')
 
@@ -148,6 +157,7 @@ class Server:
 
                 return response
             except Exception,ex:
+                self.logger.debug('error:%s' %(ex))
                 return "%s" %(ex)
 
         @bottle.route('/images/:filename')
